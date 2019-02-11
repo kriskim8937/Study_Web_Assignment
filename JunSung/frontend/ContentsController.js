@@ -31,7 +31,7 @@ class ContentsController extends Component {
     }));
   }
 
-  //분류 버튼 클릭 입력
+  //카테고리별 버튼 클릭 시 해당 카테고리가 배열에 들어감
   onClick(e) {
     const { value } = e.target;
     this.setState(prevState => ({
@@ -49,7 +49,11 @@ class ContentsController extends Component {
   onSubmit(e) {
     e.preventDefault();
     const { title, category, description } = this.state.inputValue;
+
+    //input type이 coverimg인 dom 가져옴.
     const coverImg = document.getElementById('coverImg').files[0];
+    
+    //파일(이미지) 보낼 때 파일 의외에 데이터도 보내야 한다면 formdata로 하나로 묶어 보내야 함.
     const dataInObject = {
       title,
       category,
@@ -58,10 +62,12 @@ class ContentsController extends Component {
     };
     const formData = new FormData();
 
+    //입력 받은 데이터들을 formData에 append 메소드를 이용하여 넣어준다.
     Object.keys(dataInObject).map((key) => {
       return formData.append(key, dataInObject[key]);
     });
 
+    //axios 요청으로 하나로 묶어버린 formData 하나만 전달한다.
     axios.post('http://localhost:8080/api/contents/create', formData)
     .then((result) => {
       return <Redirect to='/' />
